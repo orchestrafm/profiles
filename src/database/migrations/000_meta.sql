@@ -1,0 +1,4 @@
+CREATE TABLE `meta` (
+	`tablename` VARCHAR(32) NOT NULL UNIQUE,
+	`version` TINYINT(4) UNSIGNED NOT NULL DEFAULT '0',
+)
