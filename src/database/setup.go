@@ -2,11 +2,9 @@ package database
 
 import (
 	"bytes"
-	"database/sql"
 	"io"
 	"os"
 	"strconv"
-	"strings"
 	"time"
 
 	"github.com/orchestrafm/profiles/src/static"
