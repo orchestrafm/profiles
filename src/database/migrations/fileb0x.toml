@@ -1,5 +1,5 @@
 pkg = "static"
-dest = "src/database/"
+dest = "src/static/"
 fmt = false
 tags = "" # build tags
 
@@ -17,14 +17,14 @@ tags = "" # build tags
     keep = false
 
 clean = false
-output = "migrate.go"
+output = "migrations.go"
 unexporTed = false
 spread = false
 lcf = true
 debug = false
 
 [[custom]]
-    files = ["src/database/migrations/000_meta.sql", "src/database/migrations/001_table.sql"]
+    files = ["src/database/migrations/000_table.sql"]
     base = "src/database/migrations/"
     prefix = ""
     tags = ""
