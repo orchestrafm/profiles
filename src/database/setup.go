@@ -1,17 +1,20 @@
 package database
 
 import (
+	"bytes"
 	"database/sql"
+	"io"
 	"os"
+	"strconv"
 	"strings"
+	"time"
 
-	"github.com/orchestrafm/profiles/src/logger"
 	"github.com/orchestrafm/profiles/src/static"
-	"upper.io/db.v3/lib/sqlbuilder"
-	"upper.io/db.v3/mysql"
+	"github.com/spidernest-go/db/lib/sqlbuilder"
+	"github.com/spidernest-go/db/mysql"
+	"github.com/spidernest-go/logger"
+	"github.com/spidernest-go/migrate"
 )
-
-const version uint8 = 1
 
 var db sqlbuilder.Database
 
@@ -39,82 +42,49 @@ func Connect() error {
 	return nil
 }
 
-func UpgradeIfOutdated() {
-	err, exists := doesTableExist("meta")
-	if err != nil {
-		logger.Fatal().
+func Synchronize() {
+	// TODO: We can get names from reading fileb0x.toml instead, automating this
+	names := []string{"000_table.sql"}
+	versions := *new([]uint8)
+	times := *new([]time.Time)
+	buffers := *new([]io.Reader)
+
+	for i := range names {
+		// Assign Times
+		finfo, err := static.FS.Stat(static.CTX, names[i])
+		if err != nil {
+			logger.Panic().
+				Err(err).
+				Msg("Embedded file, " + names[i] + ", does not exists.")
+		}
+		times = append(times, finfo.ModTime())
+
+		// Assign Versioning
+		ver, err := strconv.Atoi(names[i][0:3])
+		if err != nil {
+			logger.Panic().
+				Err(err).
+				Msg("Embedded file, " + names[i] + ", could not properly convert it's prefix to a version number.")
+		}
+		versions = append(versions, uint8(ver))
+
+		// Assign Readers
+		data, err := static.ReadFile(names[i])
+		if err != nil {
+			logger.Panic().
+				Err(err).
+				Msg("Embedded file, " + names[i] + ", does not exist, or could not be read.")
+		}
+		buf := bytes.NewBuffer(data)
+		buffers = append(buffers, buf)
+	}
+
+	if err := migrate.UpTo(versions, names, times, buffers, db); err != nil {
+		logger.Panic().
 			Err(err).
-			Msg("SQL Query did not execute.")
+			Msg("Database Synchronization was unable to complete.")
 	}
 
-	if exists == false {
-		logger.Warn().
-			Err(err).
-			Msg("Meta Information Table does not exist, creating it...")
-
-	}
-
-	switch version {
-	case 0:
-		update("001_table.sql")
-		fallthrough
-
-	default:
-		db.Exec("UPDATE meta SET version = ? WHERE tablename = ?", version, "profiles")
-		logger.Info().
-			Msg("All schema upgrades finished.")
-	}
-}
-
-func doesTableExist(name string) (error, bool) {
-	stmt, err := db.Prepare(`SELECT *
-        FROM information_schema.tables
-        WHERE table_schema = ?
-            AND table_name = ?
-        LIMIT 1;`)
-
-	if err != nil {
-		return err, true
-	}
-
-	rows := stmt.QueryRow(os.Getenv("MYSQL_DB"), name)
-
-	table := make(map[string]interface{})
-	err = rows.Scan(&table)
-
-	if err == sql.ErrNoRows {
-		return nil, false
-	}
-
-	//TODO: this should be it's own error through errors.New but I'm lazy
-	return nil, true
-}
-
-func update(filename string) {
-	f, err := static.ReadFile(filename)
-
-	if err != nil {
-		logger.Fatal().
-			Err(err).
-			Msgf("Static Resource file could not be opened or found (%s).", filename)
-	}
-
-	buf := new(strings.Builder)
-	buf.Write(f)
-
-	stmt, err := db.Prepare(buf.String())
-
-	if err != nil {
-		logger.Fatal().
-			Err(err).
-			Msgf("SQL Prepare Statement failed (%s).", buf.String())
-	}
-
-	_, err = stmt.Exec()
-
-	if err != nil {
-		logger.Fatal().
-			Err(err).
-			Msg("SQL Statement failed to execute.")
-	}
+	logger.Info().
+		Msg("Database Synchronization completed successfully.")
 }
