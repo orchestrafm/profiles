@@ -5,9 +5,10 @@ import (
 	"io"
 	"os"
 	"strconv"
+	"strings"
 	"time"
 
-	"github.com/orchestrafm/profiles/src/static"
+	"github.com/gobuffalo/packr"
 	"github.com/spidernest-go/db/lib/sqlbuilder"
 	"github.com/spidernest-go/db/mysql"
 	"github.com/spidernest-go/logger"
@@ -41,41 +42,50 @@ func Connect() error {
 }
 
 func Synchronize() {
-	// TODO: We can get names from reading fileb0x.toml instead, automating this
-	names := []string{"000_table.sql"}
 	versions := *new([]uint8)
 	times := *new([]time.Time)
 	buffers := *new([]io.Reader)
+	names := *new([]string)
+	box := packr.NewBox("./migrations")
 
-	for i := range names {
+	box.Walk(func(n string, f packr.File) error {
+		vals := strings.Split(n, "_")
+
 		// Assign Times
-		finfo, err := static.FS.Stat(static.CTX, names[i])
+		epoch, err := strconv.ParseInt(vals[0], 10, 64)
 		if err != nil {
 			logger.Panic().
 				Err(err).
-				Msg("Embedded file, " + names[i] + ", does not exists.")
+				Msg("Integer Conversion was dropped.")
 		}
-		times = append(times, finfo.ModTime())
+		t := time.Unix(epoch, 0)
+
+		times = append(times, t)
 
 		// Assign Versioning
-		ver, err := strconv.Atoi(names[i][0:3])
+		ver, err := strconv.Atoi(vals[1])
 		if err != nil {
 			logger.Panic().
 				Err(err).
-				Msg("Embedded file, " + names[i] + ", could not properly convert it's prefix to a version number.")
+				Msg("Embedded file, " + n + ", could not properly convert it's prefix to a version number.")
 		}
 		versions = append(versions, uint8(ver))
 
 		// Assign Readers
-		data, err := static.ReadFile(names[i])
+		data, err := box.Find(n)
 		if err != nil {
 			logger.Panic().
 				Err(err).
-				Msg("Embedded file, " + names[i] + ", does not exist, or could not be read.")
+				Msg("Embedded file, " + n + ", does not exist, or could not be read.")
 		}
 		buf := bytes.NewBuffer(data)
 		buffers = append(buffers, buf)
-	}
+
+		// Assign Names
+		names = append(names, n)
+
+		return nil
+	})
 
 	if err := migrate.UpTo(versions, names, times, buffers, db); err != nil {
 		logger.Panic().
