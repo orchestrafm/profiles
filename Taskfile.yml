@@ -4,5 +4,6 @@ tasks:
     build:
         cmds:
             - go version
-            - fileb0x src/database/migrations/fileb0x.toml
+            - packr
             - 'go build -v -i ./src/'
+            - packr clean
