@@ -6,7 +6,7 @@ import (
 
 func (p *Profile) New() error {
 	// TODO: Make sure something doesn't already exist in the spot [id, track_id]
-	_, err := db.InsertInto("profiles").
+	r, err := db.InsertInto("profiles").
 		Values(p).
 		Exec()
 
@@ -16,5 +16,6 @@ func (p *Profile) New() error {
 			Msg("Profile could not be inserted into the table.")
 	}
 
+	p.ID, err = r.LastInsertId()
 	return err
 }
