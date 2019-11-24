@@ -16,6 +16,9 @@ func (p *Profile) New() error {
 			Msg("Profile could not be inserted into the table.")
 	}
 
-	p.ID, err = r.LastInsertId()
+	id, err := r.LastInsertId()
+	if err == nil {
+		p.ID = uint64(id)
+	}
 	return err
 }
