@@ -11,6 +11,11 @@ func main() {
 	logger.Error().
 		Err(err).
 		Msg("MySQL Database could not be attached to.")
+	if err != nil {
+		logger.Fatal().
+			Err(err).
+			Msg("MySQL Database could not be attached to.")
+	}
 	database.Synchronize()
 
 	routers.ListenAndServe()
