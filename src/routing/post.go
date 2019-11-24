@@ -34,7 +34,18 @@ func createProfile(c echo.Context) error {
 
 	// Setup Profile
 	uuid, err := identity.NewAccount(reg.Username, reg.Email, reg.Password)
-	if err != nil { //TODO: Unburn invite code
+	if err != nil {
+		logger.Error().
+			Err(err).
+			Msg("Identity Provider refused to create a new user.")
+
+		err = database.UnburnInvite(reg.InviteCode)
+		if err != nil {
+			logger.Error().
+				Err(err).
+				Msg("Invite Code could not be unburned.")
+		}
+
 		return c.JSON(http.StatusInternalServerError, &struct {
 			Message string
 		}{
@@ -43,10 +54,17 @@ func createProfile(c echo.Context) error {
 	p := new(database.Profile)
 	p.UUID = uuid
 	err = p.New()
-	if err != nil { //TODO: Unburn invite code too
+	if err != nil {
 		logger.Error().
 			Err(err).
 			Msg("Profile was not inserted into database.")
+
+		err = database.UnburnInvite(reg.InviteCode)
+		if err != nil {
+			logger.Error().
+				Err(err).
+				Msg("Invite Code could not be unburned.")
+		}
 
 		err = identity.DeleteAccount(uuid)
 		if err != nil {
