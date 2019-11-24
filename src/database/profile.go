@@ -10,3 +10,10 @@ type Profile struct {
 	Mastery           uint8  `db:"mastery" json:"mastery"`
 	PerformanceRating uint64 `db:"performance_rating" json:"performance_rating"`
 }
+
+type Registration struct {
+	Username   string `json:"username"`
+	Email      string `json:"email"`
+	Password   string `json:"password"`
+	InviteCode string `json:"invite_code,omitempty"`
+}
