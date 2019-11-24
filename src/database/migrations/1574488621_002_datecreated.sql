@@ -1,0 +1,1 @@
+ALTER TABLE `profiles` ADD `date_created` DATETIME NOT NULL DEFAULT NOW();
