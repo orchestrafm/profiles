@@ -15,3 +15,7 @@ func NewAccount(username, email, password string) (string, error) {
 
 	return idp.CreateUser(token.AccessToken, os.Getenv("IDP_REALM"), user)
 }
+
+func DeleteAccount(uuid string) error {
+	return idp.DeleteUser(token.AccessToken, os.Getenv("IDP_REALM"), uuid)
+}
