@@ -44,6 +44,17 @@ func createProfile(c echo.Context) error {
 	p.UUID = uuid
 	err = p.New()
 	if err != nil { //TODO: Unburn invite code too
+		logger.Error().
+			Err(err).
+			Msg("Profile was not inserted into database.")
+
+		err = identity.DeleteAccount(uuid)
+		if err != nil {
+			logger.Error().
+				Err(err).
+				Msg("User also wasn't removed from IDP.")
+		}
+
 		return c.JSON(http.StatusInternalServerError, &struct {
 			Message string
 		}{
