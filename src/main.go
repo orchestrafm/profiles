@@ -27,5 +27,7 @@ func main() {
 		}
 	}()
 
+	identity.EnableOIDC()
+
 	routers.ListenAndServe()
 }
