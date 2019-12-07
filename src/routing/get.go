@@ -1,6 +1,7 @@
 package routers
 
 import (
+	"encoding/json"
 	"net/http"
 	"strconv"
 
@@ -9,6 +10,7 @@ import (
 	"github.com/orchestrafm/profiles/src/identity"
 	"github.com/spidernest-go/logger"
 	"github.com/spidernest-go/mux"
+	"golang.org/x/oauth2"
 )
 
 func getProfileById(c echo.Context) error {
@@ -43,3 +45,69 @@ func getOIDCLogin(c echo.Context) error {
 	return c.Redirect(http.StatusFound, identity.OAuth2.AuthCodeURL(state, oidc.Nonce(identity.Nonce)))
 }
 
+func getOIDCRedirect(c echo.Context) error {
+	// match states
+	ii := -1
+	err := func() error {
+		StateLock.RLock()
+		defer StateLock.RUnlock()
+		if i, val := OAuthStates.Find(func(index int, value interface{}) bool {
+			ii = index
+			switch value.(string) {
+			case c.QueryParams().Get("state"):
+				return true
+			default:
+				return false
+			}
+		}); i == -1 || val == nil {
+			// state did not match
+			return c.JSON(http.StatusNotFound, ErrGeneric)
+		}
+		return nil
+	}()
+	if err != nil {
+		return err
+	}
+
+	// remove the state from the list
+	StateLock.Lock()
+	OAuthStates.Remove(ii)
+	StateLock.Unlock()
+
+	tkn, err := identity.OAuth2.Exchange(identity.Context, c.QueryParams().Get("code"))
+	if err != nil {
+		// failed to exchange token
+		return c.JSON(http.StatusNotFound, ErrGeneric)
+	}
+
+	raw, ok := tkn.Extra("id_token").(string)
+	if !ok {
+		// no id_token field in bearer token
+		return c.JSON(http.StatusNotFound, ErrGeneric)
+	}
+
+	id, err := identity.NonceEnabledVerifier.Verify(identity.Context, raw)
+	if err != nil {
+		// nonce verification failed
+		return c.JSON(http.StatusNotFound, ErrGeneric)
+	}
+	if id.Nonce != identity.Nonce {
+		// nonces do not match and is invalid
+		return c.JSON(http.StatusNotFound, ErrGeneric)
+	}
+
+	resp := struct {
+		Token  *oauth2.Token
+		Claims *json.RawMessage
+	}{tkn, new(json.RawMessage)}
+
+	if err := id.Claims(&resp.Claims); err != nil {
+		return c.JSON(http.StatusNotFound, ErrGeneric)
+	}
+	data, err := json.MarshalIndent(resp, "", "    ")
+	if err != nil {
+		return c.JSON(http.StatusNotFound, ErrGeneric)
+	}
+
+	return c.JSONBlob(http.StatusOK, data)
+}
