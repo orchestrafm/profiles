@@ -21,7 +21,7 @@ var (
 	Nonce                string
 )
 
-func StartOIDC() {
+func EnableOIDC() {
 	// generate a random, cryptographically secure, 32-bit nonce
 	buf := make([]byte, 32)
 	_, err := rand.Read(buf)
