@@ -4,7 +4,9 @@ import (
 	"net/http"
 	"strconv"
 
+	oidc "github.com/coreos/go-oidc"
 	"github.com/orchestrafm/profiles/src/database"
+	"github.com/orchestrafm/profiles/src/identity"
 	"github.com/spidernest-go/logger"
 	"github.com/spidernest-go/mux"
 )
@@ -32,3 +34,12 @@ func getProfileById(c echo.Context) error {
 
 	return c.JSON(http.StatusOK, &pf)
 }
+
+func getOIDCLogin(c echo.Context) error {
+	StateLock.Lock()
+	defer StateLock.Unlock()
+	state := identity.GetRandomString(16)
+	OAuthStates.Add(state)
+	return c.Redirect(http.StatusFound, identity.OAuth2.AuthCodeURL(state, oidc.Nonce(identity.Nonce)))
+}
+
