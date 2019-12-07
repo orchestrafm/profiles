@@ -34,6 +34,8 @@ func ListenAndServe() {
 	r = echo.New()
 
 	v0 := r.Group("/api/v0")
+	v0.GET("/oidc/authorize", getOIDCLogin)
+	v0.GET("/oidc/callback", getOIDCRedirect)
 	v0.GET("/profile/:id", getProfileById)
 	v0.POST("/profile", createProfile)
 
