@@ -81,3 +81,41 @@ func createProfile(c echo.Context) error {
 
 	return c.JSON(http.StatusOK, p)
 }
+
+func loginProfile(c echo.Context) error {
+	//TODO: this function should use HTTP Basic Auth instead
+
+	// form binding
+	lgn := new(database.Login)
+	if err := c.Bind(lgn); err != nil {
+		logger.Error().
+			Err(err).
+			Msg("Invalid or malformed login form.")
+
+		return c.JSON(http.StatusNotAcceptable, &struct {
+			Message string
+		}{
+			Message: "Login form data was invalid or malformed."})
+	}
+
+	// login profile
+	jwt, err := identity.LoginAccount(lgn.Username, lgn.Password)
+	if err != nil {
+		logger.Error().
+			Err(err).
+			Msg("User failed to login.")
+
+		return c.JSON(http.StatusForbidden, &struct {
+			Message string
+		}{
+			Message: "Incorrect username or password."})
+	}
+
+	return c.JSON(http.StatusAccepted, &struct {
+		RefreshToken string
+		BearerToken  string
+	}{
+		RefreshToken: jwt.RefreshToken,
+		BearerToken:  jwt.AccessToken,
+	})
+}
