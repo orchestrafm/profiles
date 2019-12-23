@@ -19,3 +19,12 @@ func NewAccount(username, email, password string) (string, error) {
 func DeleteAccount(uuid string) error {
 	return idp.DeleteUser(token.AccessToken, os.Getenv("IDP_REALM"), uuid)
 }
+
+func LoginAccount(username, password string) (*gocloak.JWT, error) {
+	return idp.Login(
+		os.Getenv("OIDC_CLIENT_ID"),
+		os.Getenv("OIDC_CLIENT_SECRET"),
+		os.Getenv("IDP_REALM"),
+		username,
+		password)
+}
