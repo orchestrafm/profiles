@@ -1,7 +1,7 @@
 module github.com/orchestrafm/profiles
 
 require (
-	github.com/Nerzal/gocloak v0.0.0-20190601185315-ffb03da972d7
+	github.com/Nerzal/gocloak v0.0.0-20190601185315-0b08578412b7
 	github.com/coreos/go-oidc v2.1.0+incompatible
 	github.com/dgrijalva/jwt-go v3.2.0+incompatible
 	github.com/emirpasic/gods v1.12.0
@@ -27,7 +27,7 @@ require (
 	github.com/spidernest-go/migrate v0.0.0-20190604214622-8fccd3022231
 	github.com/spidernest-go/mux v0.0.0-20191222224330-b729ac97dc9a
 	github.com/valyala/bytebufferpool v1.0.0
-	github.com/valyala/fasthttp v0.0.0-20171207120941-e5f51c11919d
+	github.com/valyala/fasthttp v0.0.0-20171207120941-415e5fc53169
 	github.com/valyala/fasttemplate v1.1.0
 	golang.org/x/crypto v0.0.0-20191219195013-becbf705a915
 	golang.org/x/net v0.0.0-20191209160850-c0dbc17a3553
