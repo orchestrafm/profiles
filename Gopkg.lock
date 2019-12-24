@@ -9,7 +9,7 @@
     "pkg/jwx",
   ]
   pruneopts = "UT"
-  revision = "ffb03da972d73b53974815bc3862fab119d388c8"
+  revision = "0b08578412b78dc805c6fef475241179a625b2ec"
   version = "v2.1.0"
 
 [[projects]]
@@ -258,7 +258,7 @@
     "stackless",
   ]
   pruneopts = "UT"
-  revision = "e5f51c11919d4f66400334047b897ef0a94c6f3c"
+  revision = "415e5fc531692d7533e08d7addf33a26b0b8f99a"
   version = "v20180529"
 
 [[projects]]
