@@ -22,3 +22,17 @@ func (p *Profile) New() error {
 	}
 	return err
 }
+
+func (r *ReqList) New() error {
+	_, err := db.InsertInto("reqlist").
+		Values(r).
+		Exec()
+
+	if err != nil {
+		logger.Error().
+			Err(err).
+			Msg("Email could not be inserted into the table.")
+	}
+
+	return err
+}
