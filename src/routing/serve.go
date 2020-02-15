@@ -1,12 +1,14 @@
 package routers
 
 import (
+	"net/http"
 	"sync"
 
 	"github.com/emirpasic/gods/lists/arraylist"
 	"github.com/orchestrafm/profiles/src/identity"
 	"github.com/spidernest-go/logger"
 	"github.com/spidernest-go/mux"
+	"github.com/spidernest-go/mux/middleware"
 )
 
 var (
@@ -33,9 +35,17 @@ func ListenAndServe() {
 	// Start serving API routes
 	r = echo.New()
 
+	r.Use(middleware.CORSWithConfig(middleware.CORSConfig{
+		AllowOrigins: []string{"*"},
+		AllowMethods: []string{http.MethodGet, http.MethodHead, http.MethodPut, http.MethodPatch, http.MethodPost, http.MethodDelete},
+		AllowHeaders: []string{echo.HeaderOrigin, echo.HeaderContentType, echo.HeaderAccept},
+	}))
+
 	v0 := r.Group("/api/v0")
+
 	v0.GET("/oidc/authorize", getOIDCLogin)
 	v0.GET("/oidc/callback", getOIDCRedirect)
+
 	v0.GET("/profile/:id", getProfileById)
 	v0.POST("/profile", createProfile)
 	v0.POST("/profile/basic", loginProfile)
