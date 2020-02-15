@@ -25,7 +25,7 @@ require (
 	github.com/spidernest-go/db v0.0.0-20190526235030-072cabf93805
 	github.com/spidernest-go/logger v0.0.0-20191128190838-520d89ea00af
 	github.com/spidernest-go/migrate v0.0.0-20190604214622-8fccd3022231
-	github.com/spidernest-go/mux v0.0.0-20191222224330-b729ac97dc9a
+	github.com/spidernest-go/mux v0.0.0-20200202234537-1b58c269dc0a
 	github.com/valyala/bytebufferpool v1.0.0
 	github.com/valyala/fasthttp v0.0.0-20171207120941-415e5fc53169
 	github.com/valyala/fasttemplate v1.1.0
