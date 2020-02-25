@@ -27,7 +27,6 @@ require (
 	github.com/spidernest-go/migrate v0.0.0-20190604214622-8fccd3022231
 	github.com/spidernest-go/mux v0.0.0-20200202234537-1b58c269dc0a
 	github.com/valyala/bytebufferpool v1.0.0
-	github.com/valyala/fasthttp v0.0.0-20171207120941-415e5fc53169
 	github.com/valyala/fasttemplate v1.1.0
 	golang.org/x/crypto v0.0.0-20191219195013-becbf705a915
 	golang.org/x/net v0.0.0-20191209160850-c0dbc17a3553
