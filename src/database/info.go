@@ -19,7 +19,7 @@ func SelectProfileById(id uint64) (error, *Profile) {
 		return err, nil
 	}
 
-	pf.UUID = *new(string) // Clear this field so it doesn't return
+	// pf.UUID = *new(string) // QUEST: Should I clear this field so it doesn't return?
 
 	return nil, &pf
 }
