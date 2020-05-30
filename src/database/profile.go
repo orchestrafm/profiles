@@ -3,6 +3,7 @@ package database
 type Profile struct {
 	ID                uint64 `db:"id" json:"id"`
 	UUID              string `db:"uuid" json:"uuid,omitempty"`
+	Username          string `json:"username,omitempty"`
 	Experience        uint64 `db:"experience" json:"experience"`
 	Level             uint64 `db:"level" json:"level"`
 	TotalScore        uint64 `db:"total_score" json:"total_score"`
