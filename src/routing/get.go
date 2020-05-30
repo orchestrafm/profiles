@@ -34,6 +34,17 @@ func getProfileById(c echo.Context) error {
 		c.JSON(http.StatusNotFound, ErrGeneric)
 	}
 
+	// Get OIDC Account Info
+	acc, err := identity.GetAccount(pf.UUID)
+	if err != nil {
+		logger.Error().
+			Err(err).
+			Msgf("Profile did not have a proper UUID (%s).", pf.UUID)
+
+		return c.JSON(http.StatusBadRequest, nil)
+	}
+
+	pf.Username = acc.Username
 	return c.JSON(http.StatusOK, &pf)
 }
 
