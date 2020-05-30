@@ -28,3 +28,9 @@ func LoginAccount(username, password string) (*gocloak.JWT, error) {
 		username,
 		password)
 }
+
+func GetAccount(uuid string) (*gocloak.User, error) {
+	return idp.GetUserByID(token.AccessToken,
+		os.Getenv("IDP_REALM"),
+		uuid)
+}
