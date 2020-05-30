@@ -37,6 +37,19 @@ func getProfileById(c echo.Context) error {
 	return c.JSON(http.StatusOK, &pf)
 }
 
+func getProfileByUUID(c echo.Context) error {
+	acc, err := identity.GetAccount(c.Param("uuid"))
+	if err != nil {
+		logger.Error().
+			Err(err).
+			Msgf("Passed uuid parameter (%s) was not valid or had no account attached", c.Param("uuid"))
+
+		return c.JSON(http.StatusBadRequest, nil)
+	}
+
+	return c.JSON(http.StatusOK, &acc)
+}
+
 func getOIDCLogin(c echo.Context) error {
 	StateLock.Lock()
 	defer StateLock.Unlock()
