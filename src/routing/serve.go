@@ -46,8 +46,7 @@ func ListenAndServe() {
 	v0.GET("/oidc/authorize", getOIDCLogin)
 	v0.GET("/oidc/callback", getOIDCRedirect)
 
-	v0.GET("/profile/id/:id", getProfileById)
-	v0.GET("/profile/uuid/:uuid", getProfileByUUID)
+	v0.GET("/profile/:id", getProfileById)
 	v0.POST("/profile", createProfile)
 	v0.POST("/profile/basic", loginProfile)
 
