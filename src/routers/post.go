@@ -119,3 +119,42 @@ func loginProfile(c echo.Context) error {
 		BearerToken:  jwt.AccessToken,
 	})
 }
+
+func refreshAuth(c echo.Context) error {
+	type ref struct {
+		Value string `json:"refresh_token"`
+	}
+
+	// Bind Data
+	tkn := new(ref)
+	if err := c.Bind(tkn); err != nil {
+		logger.Error().
+			Err(err).
+			Msg("Invalid or malformed token.")
+
+		return c.JSON(http.StatusNotAcceptable, &struct {
+			Message string
+		}{
+			Message: "Refresh token was invalid or malformed."})
+	}
+
+	// Refresh Authorization
+	if jwt, err := identity.RefreshToken(tkn.Value); err != nil {
+		logger.Error().
+			Err(err).
+			Msg("User attempted to refresh their authorization.")
+
+		return c.JSON(http.StatusInternalServerError, &struct {
+			Message string
+		}{
+			Message: "Identity server rejected the refresh token."})
+	} else {
+		return c.JSON(http.StatusAccepted, &struct {
+			RefreshToken string `json:"refresh"`
+			BearerToken  string `json:"bearer"`
+		}{
+			RefreshToken: jwt.RefreshToken,
+			BearerToken:  jwt.AccessToken,
+		})
+	}
+}

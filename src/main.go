@@ -5,7 +5,7 @@ import (
 
 	"github.com/orchestrafm/profiles/src/database"
 	"github.com/orchestrafm/profiles/src/identity"
-	"github.com/orchestrafm/profiles/src/routing"
+	"github.com/orchestrafm/profiles/src/routers"
 	"github.com/spidernest-go/logger"
 )
 
