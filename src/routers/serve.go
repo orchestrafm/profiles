@@ -52,5 +52,6 @@ func ListenAndServe() {
 	v0.POST("/profile", createProfile)
 
 	v0.POST("/invite/join", joinMailingList)
+
 	r.Start(":5000")
 }
