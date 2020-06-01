@@ -112,8 +112,8 @@ func loginProfile(c echo.Context) error {
 	}
 
 	return c.JSON(http.StatusAccepted, &struct {
-		RefreshToken string
-		BearerToken  string
+		RefreshToken string `json:"refresh"`
+		BearerToken  string `json:"bearer"`
 	}{
 		RefreshToken: jwt.RefreshToken,
 		BearerToken:  jwt.AccessToken,
