@@ -46,9 +46,10 @@ func ListenAndServe() {
 	v0.GET("/oidc/authorize", getOIDCLogin)
 	v0.GET("/oidc/callback", getOIDCRedirect)
 
+	v0.POST("/authorize/basic", loginProfile)
+
 	v0.GET("/profile/:id", getProfileById)
 	v0.POST("/profile", createProfile)
-	v0.POST("/profile/basic", loginProfile)
 
 	v0.POST("/invite/join", joinMailingList)
 	r.Start(":5000")
