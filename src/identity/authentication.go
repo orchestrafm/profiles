@@ -51,7 +51,22 @@ func EnableOIDC() {
 		ClientSecret: clientSecret,
 		Endpoint:     provider.Endpoint(),
 		RedirectURL:  "http://localhost:5000/api/v0/oidc/callback",
-		Scopes:       []string{oidc.ScopeOpenID, "profile", "email", "track:write", "track:admin", "board:write", "board:admin", "score:write", "score:admin"},
+		Scopes: []string{oidc.ScopeOpenID,
+			"profile",
+			"email",
+			"track:read",
+			"track:write",
+			"track:admin",
+			"board:read",
+			"board:write",
+			"board:admin",
+			"score:read",
+			"score:write",
+			"score:admin",
+			"update:read",
+			"update:write",
+			"update:admin",
+		},
 	}
 
 	logger.Info().
