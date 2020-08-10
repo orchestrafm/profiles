@@ -34,6 +34,18 @@ func getProfileById(c echo.Context) error {
 		c.JSON(http.StatusNotFound, ErrGeneric)
 	}
 
+	grps, err := identity.GetGroups(pf.UUID)
+	if err != nil {
+		logger.Error().
+			Err(err).
+			Msg("Groups this user is in could not be retreived.")
+
+		c.JSON(http.StatusInternalServerError, ErrGeneric)
+	}
+	for _, grp := range grps {
+		pf.Groups = append(pf.Groups, grp.Name)
+	}
+
 	// Get OIDC Account Info
 	acc, err := identity.GetAccount(pf.UUID)
 	if err != nil {
