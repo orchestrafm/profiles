@@ -13,7 +13,15 @@ func NewAccount(username, email, password string) (string, error) {
 		Username: username,
 	}
 
-	return idp.CreateUser(token.AccessToken, os.Getenv("IDP_REALM"), user)
+	uuid, err := idp.CreateUser(token.AccessToken, os.Getenv("IDP_REALM"), user)
+	if err != nil {
+		return "", err
+	}
+
+	//HACK: hopefully future gocloak versions let me set
+	//      the password directly on the type struct
+	err = idp.SetPassword(token.AccessToken, uuid, os.Getenv("IDP_REALM"), password, false)
+	return uuid, err
 }
 
 func DeleteAccount(uuid string) error {
