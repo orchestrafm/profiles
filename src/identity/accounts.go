@@ -35,6 +35,10 @@ func GetAccount(uuid string) (*gocloak.User, error) {
 		uuid)
 }
 
+func GetGroups(uuid string) ([]*gocloak.UserGroup, error) {
+	return idp.GetUserGroups(token.AccessToken, os.Getenv("IDP_REALM"), uuid)
+}
+
 func RefreshToken(ref string) (*gocloak.JWT, error) {
 	return idp.RefreshToken(
 		ref,
