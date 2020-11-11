@@ -8,9 +8,10 @@ import (
 
 func NewAccount(username, email, password string) (string, error) {
 	user := gocloak.User{
-		Email:    email,
-		Enabled:  true,
-		Username: username,
+		Email:     email,
+		Enabled:   true,
+		Username:  username,
+		FirstName: username,
 	}
 
 	uuid, err := idp.CreateUser(token.AccessToken, os.Getenv("IDP_REALM"), user)
@@ -21,6 +22,7 @@ func NewAccount(username, email, password string) (string, error) {
 	//HACK: hopefully future gocloak versions let me set
 	//      the password directly on the type struct
 	err = idp.SetPassword(token.AccessToken, uuid, os.Getenv("IDP_REALM"), password, false)
+
 	return uuid, err
 }
 
