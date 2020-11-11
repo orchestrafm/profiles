@@ -55,7 +55,7 @@ func getProfileById(c echo.Context) error {
 
 		return c.JSON(http.StatusBadRequest, nil)
 	}
-	pf.Username = acc.Username
+	pf.Username = acc.FirstName
 	pf.UUID = ""
 
 	return c.JSON(http.StatusOK, &pf)
