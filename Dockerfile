@@ -3,8 +3,8 @@ FROM golang:1.12.17-alpine3.10 as builder
 
 # Add Build Dependencies and Working Directory
 RUN apk --no-cache add build-base git
-RUN go install github.com/gobuffalo/packr@v1.30.1
-RUN go install github.com/go-task/task@v2.0.0
+RUN GO111MODULE=on go install github.com/gobuffalo/packr@v1.30.1
+RUN GO111MODULE=on go install github.com/go-task/task@v2.0.0
 RUN mkdir /build
 ADD . /build/
 WORKDIR /build
