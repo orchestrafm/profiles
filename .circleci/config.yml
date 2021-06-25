@@ -1,5 +1,11 @@
 version: 2.1
 
+executors:
+  docker:
+    working_directory: /tmp/workspace
+    docker:
+      - image: docker:latest
+
 jobs:
     docker:
     steps:
