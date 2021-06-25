@@ -8,11 +8,11 @@ executors:
 
 jobs:
     docker:
-    steps:
-        - checkout
-        - setup_remote_docker:
-            version: 19.03.13
-        - run:
-            name: Build
-            command: |
-                docker build -t $CONTAINER_REGISTRY_URL/$CONTAINER_REGISTRY/profiles:$(date +%Y.%m.%H%M%S) .
+        steps:
+            - checkout
+            - setup_remote_docker:
+                version: 19.03.13
+            - run:
+                name: Build
+                command: |
+                    docker build -t $CONTAINER_REGISTRY_URL/$CONTAINER_REGISTRY/profiles:$(date +%Y.%m.%H%M%S) .
