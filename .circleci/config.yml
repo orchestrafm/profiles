@@ -17,3 +17,9 @@ jobs:
                 name: Build
                 command: |
                     docker build -t $CONTAINER_REGISTRY_URL/$CONTAINER_REGISTRY/profiles:$(date +%Y.%m.%H%M%S) .
+
+workflows:
+    version: 2
+    build:
+        jobs:
+            - docker
