@@ -1,6 +1,6 @@
 module github.com/orchestrafm/profiles
 
-go 1.12.17
+go 1.13.15
 
 require (
 	github.com/Nerzal/gocloak v0.0.0-20190601185315-0b08578412b7

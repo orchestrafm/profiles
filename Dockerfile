@@ -1,5 +1,5 @@
 # Set Builder Image
-FROM golang:1.12.17-alpine3.10 as builder
+FROM golang:1.13.15-alpine3.12 as builder
 
 # Add Build Dependencies and Working Directory
 RUN apk --no-cache add build-base git tar wget
