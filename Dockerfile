@@ -13,7 +13,7 @@ WORKDIR /build
 # Compile
 ENV GO111MODULE=on
 RUN go install github.com/gobuffalo/packr
-RUN CGO_ENABLED=0 GOOS=linux go build -i -v -a -installsuffix cgo -ldflags '-extldflags "-static"' -o service ./src/
+RUN task build OUTNAME=service
 
 # Move to Base Image and Run
 FROM alpine:3.12.0
