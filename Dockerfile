@@ -6,13 +6,15 @@ RUN apk --no-cache add build-base git tar wget
 RUN wget https://github.com/go-task/task/releases/download/v2.0.0/task_linux_amd64.tar.gz
 RUN tar zxvf task_linux_amd64.tar.gz && cp ./task /usr/bin/
 RUN chmod +x /usr/bin/task
+RUN wget https://github.com/gobuffalo/packr/releases/download/v1.30.1/packr_1.30.1_linux_amd64.tar.gz
+RUN tar zxvf packr_1.30.1_linux_amd64.tar.gz && cp ./packr /usr/bin/
+RUN chmod +x /usr/bin/packr
 RUN mkdir /build
 ADD . /build/
 WORKDIR /build
 
 # Compile
 ENV GO111MODULE=on
-RUN go install github.com/gobuffalo/packr/packr
 RUN task build OUTNAME=service
 
 # Move to Base Image and Run
