@@ -13,6 +13,7 @@ WORKDIR /build
 # Compile
 ENV GO111MODULE=on
 RUN go install github.com/gobuffalo/packr
+RUN cp $GOPATH/bin/packr /usr/bin && chmod +x packr
 RUN task build OUTNAME=service
 
 # Move to Base Image and Run
